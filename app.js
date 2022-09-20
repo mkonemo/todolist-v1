@@ -4,24 +4,33 @@ const ejs = require("ejs");
 
 const app = express();
 
+let items = ["Buy food", "Cook food", "Eat food"];
+
 app.set('view engine', 'ejs');
 
-app.get("/", function(req, res){
-  let today = new Date();
-  let currentDay = today.getDay();
-  let day ="";
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
-  if (currentDay === 6 || currentDay === 0) {
-    day = "weekend";
-  } else {
-    day = "working day";
+app.get("/", function(req, res) {
+  let today = new Date();
+  let options = {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long'
   }
 
-  let currentDayName = today.toLocaleDateString('en-us', {weekday: 'long'});
-  res.render("list", {
-    kindOfDay: day,
-    dayName: currentDayName
-  });
+  let day = today.toLocaleDateString('en-us', options);
+
+  res.render("list", {kindOfDay: day, newListItems: items});
+});
+
+app.post("/", function(req, res) {
+  var item = req.body.newItem;
+
+  items.push(item);
+
+  res.redirect("/");
 });
 
 app.listen(4000, () => {
