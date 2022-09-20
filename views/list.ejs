@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>To do List</title>
+</head>
+
+<body>
+  <!-- <p>
+  Today it's a <%= kindOfDay %>, and it's <%= dayName %>
+</p> -->
+  <% if (dayName === "Saturday" || dayName === "Sunday") { %>
+  <p style="color: purple"><%= dayName %> ToDo list</p>
+  <% } else { %>
+  <p style="color: blue"><%= dayName %> ToDo list</p>
+  <% } %>
+</body>
+
+</html>
