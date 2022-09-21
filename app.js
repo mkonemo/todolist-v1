@@ -5,12 +5,17 @@ const ejs = require("ejs");
 const app = express();
 
 let items = ["Buy food", "Cook food", "Eat food"];
+let workItems = [];
 
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
+app.use(express.static("public"));
+
+// ROOT
 
 app.get("/", function(req, res) {
   let today = new Date();
@@ -22,16 +27,54 @@ app.get("/", function(req, res) {
 
   let day = today.toLocaleDateString('en-us', options);
 
-  res.render("list", {kindOfDay: day, newListItems: items});
+  res.render("list", {
+    listTitle: day,
+    newListItems: items
+  });
 });
 
 app.post("/", function(req, res) {
-  var item = req.body.newItem;
+  console.log(req.body);
 
-  items.push(item);
+  let item = req.body.newItem;
 
-  res.redirect("/");
+  if (req.body.list === "Work") {
+    workItems.push(item);
+    res.redirect("/work");
+  } else {
+    items.push(item);
+    res.redirect("/");
+  }
+
 });
+
+// WORK
+
+app.get("/work", (req, res) => {
+  res.render("list", {
+    listTitle: "Work list",
+    newListItems: workItems
+  });
+});
+
+app.post("/work", (req, res) => {
+  let item = req.body.newItem;
+
+  workItems.push(item);
+
+  res.redirect("/work");
+});
+
+// ABOUT
+
+app.get("/about", (req, res) => {
+  res.render("about");
+})
+
+// ALL || 404
+app.all('*', (req, res) => {
+    res.send("404 page");
+})
 
 app.listen(4000, () => {
   console.log("Server running on port 4000. ");
